@@ -1,0 +1,12 @@
+module.exports = {
+  "up": `
+    CREATE TABLE tags(
+        id INT NOT NULL AUTO_INCREMENT,
+        name VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL on UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(id)
+    )  ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+  `,
+  "down": "DROP TABLE tags;"
+}
