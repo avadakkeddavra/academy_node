@@ -24,6 +24,6 @@ db.Sequelize = Sequelize;
 
 require('./relations/user')(db);
 require('./relations/reset_password')(db);
-
+require('./relations/news')(db);
 
 module.exports = db;

@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: academy
+    volumes:
+      - ./db:/var/lib/mysql
+    ports:
+      - 3305:3306
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 6080:8080
+
+  # web:
+  #   build: ./
+  #   volumes:
+  #     - ./web:/home/project
+  #   ports:
+  #       - 3000:3000
+  #   command: nodemon app.js
