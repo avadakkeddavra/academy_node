@@ -22,7 +22,8 @@ class AuthMiddleware {
                         Request.auth = {
                             id: user.id,
                             email: user.email,
-                            name: user.name
+                            name: user.name,
+                            role: user.role
                         }
                         next()
                     } else {
@@ -35,6 +36,50 @@ class AuthMiddleware {
                 Response.send(Error)
             }
         })
+    }
+
+    canCreate(Request, Response, next) {
+        const rule = 0x1000;
+        const role = Number(Request.auth.role);
+
+        if((role & rule) === rule) {
+            next()
+        } else {
+            Response.send({ success: false, message: 'You dont have access' });
+        }
+    }
+
+    canDelete(Request, Response, next) {
+        const rule = 0x0001;
+        const role = Number(Request.auth.role);
+
+        if((role & rule) === rule) {
+            next();
+        } else {
+            Response.send({ success: false, message: 'You dont have access' });
+        }
+    }
+
+    canEdit(Request, Response, next) {
+        const rule = 0x0010;
+        const role = Number(Request.auth.role);
+
+        if((role & rule) === rule) {
+            next()
+        } else {
+            Response.send({ success: false, message: 'You dont have access' });
+        }
+    }
+
+    canRead(Request, Response, next) {
+        const rule = 0x0100;
+        const role = Number(Request.auth.role);
+
+        if((role & rule) === rule) {
+            next()
+        } else {
+            Response.send({ success: false, message: 'You dont have access' });
+        }
     }
 
 }

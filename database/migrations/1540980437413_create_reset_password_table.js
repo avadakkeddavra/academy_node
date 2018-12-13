@@ -8,7 +8,7 @@ module.exports = {
         created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id)  ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
     `,
     "down": "DROP TABLE reset_password"

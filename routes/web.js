@@ -2,8 +2,17 @@ const express = require('express');
 const Router = express.Router();
 const AuthController = require('@auth/AuthController');
 const AuthMiddleware = require('@middleware/AuthMiddleware');
+
+const NewsController = require('@controller/NewsController');
+const TagsController = require('@controller/TagsController');
+const FilesController = require('@controller/FilesController');
+
 const multer = require('multer');
-const UploadService = multer({ dest:'./storage'})
+const UploadService = multer({ 
+    dest:'./storage',
+}).array('files', 5);
+
+
 
 Router.post('/login', AuthController.login.bind(AuthController))
 Router.post('/register', AuthController.register.bind(AuthController))
@@ -11,11 +20,21 @@ Router.post('/resetlink', AuthController.requestForResetPassword.bind(AuthContro
 Router.get('/check_resetlink/:hash', AuthController.checkResetPasswordLink.bind(AuthController));
 Router.post('/reset_password/:hash', AuthController.resetPassword.bind(AuthController))
 
-Router.post('/upload', UploadService.array('attachements', 5), function(req, res) {
-    res.send({ files: req.files,body: req.body});
-}); 
+Router.post(
+    '/news', 
+    AuthMiddleware.auth,
+    AuthMiddleware.canCreate,
+    NewsController.create.bind(NewsController)
+); 
+Router.delete('/news/:id', AuthMiddleware.auth, AuthMiddleware.canDelete, NewsController.delete)
 
-Router.get('/',AuthMiddleware.auth, function(Request, Response) {
-    Response.send(Request.auth)
-});
+Router.get('/news/:id',  NewsController.get);
+Router.get('/news',  NewsController.all);
+
+Router.post('/tags', AuthMiddleware.auth, AuthMiddleware.canCreate, TagsController.create.bind(TagsController));
+Router.get('/tags', TagsController.all.bind(TagsController));
+
+Router.post('/files', AuthMiddleware.auth, UploadService, FilesController.create);
+Router.get('/files', AuthMiddleware.auth, FilesController.all);
+
 module.exports = Router;

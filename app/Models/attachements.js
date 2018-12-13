@@ -2,13 +2,6 @@
 module.exports = function (sequelize,Sequelize) {
     
     let AttachementsSchema = {
-        new_id: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: 'news',
-                key: 'id'
-            }
-        },
         type: {
             type: Sequelize.STRING(256),
             nullable: true

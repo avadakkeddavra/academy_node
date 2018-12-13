@@ -1,3 +1,3 @@
 module.exports = function (db) {
-    db.attachements.belongsTo(db.news, {foreignKey: 'new_id'});
+    db.attachements.belongsToMany(db.news, {through:'news_attachements', as:'news', foreignKey: 'attachement_id'});
 }

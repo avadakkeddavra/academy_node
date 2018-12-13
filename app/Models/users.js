@@ -12,6 +12,10 @@ module.exports = function (sequelize,Sequelize) {
         password: {
             type: Sequelize.STRING(256),
         },
+        role: {
+            type: Sequelize.STRING(256),
+            defaultValue: '0x1111'
+        },
         created_at: {
             type: Sequelize.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')

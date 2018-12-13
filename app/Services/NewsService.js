@@ -1,9 +1,10 @@
-
+const GlobalModel = require('@model/index');
+const Attachement = GlobalModel.news_attachements;
 
 class NewsService {
     
-    uploadAttachements(Attachements) {
-            
+    uploadAttachements(attachements) {
+        console.log(attachements);
     }
 
 }
