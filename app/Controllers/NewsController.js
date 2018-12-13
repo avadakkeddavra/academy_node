@@ -7,13 +7,14 @@ const Attachements = GlobalModel.attachements;
 const User = GlobalModel.users;
 const Tags = GlobalModel.tags;
 const NewsTags = GlobalModel.news_tags;
+const NewsAttachements = GlobalModel.news_attachements;
 
 const NewsService = require('@service/NewsService');
 const NewsSchema = require('@schema/NewsSchema');
 const fs = require('fs');
 
 class NewsController extends Controller{
-    
+
     get(Request, Response) {
         NewsModel.findById(Request.params.id, {
             include: [
@@ -24,6 +25,13 @@ class NewsController extends Controller{
                     model: Attachements,
                     as: 'attachements',
                     order: [['main','ASC']]
+                },  {
+                    model: Tags,
+                    as: 'tags',
+                    order: [['index_number', 'ASC']]
+                }, {
+                    model: Attachements,
+                    as: 'mainImg'
                 }
             ]
         }).then((news) => {
@@ -33,35 +41,30 @@ class NewsController extends Controller{
         })
     }
 
-    create(Request, Response, next) {
+    create(Request, Response) {
         this.Joi.validate(Request.body, NewsSchema.create).then((data) => {
             data.creator_id = Request.auth.id;
-            let tags = '';
-            let attachements;
-            if(data.tags) {
-                tags = data.tags.split(',');
-                delete data.tags;
-            }
-            if(data.attachements) {
-                attachements = data.attachements;
-                delete data.attachements;
-            }
-               
+
             NewsModel.create(data).then( (newCreated) => {
-                Request.new = newCreated; 
-                if(tags && tags.length > 0) {
-                    tags.forEach((item) => {
-                        NewsTags.create({
-                            new_id: newCreated.id,
-                            tag_id: Number(item)
-                        })
+                data.tags.forEach(async (tag) => {
+                    await NewsTags.create({
+                      tag_id: Number(tag),
+                      new_id: newCreated.id
                     })
-                }
-                next();
-            }).catch((error) => {
-                Request.files.forEach((file) => {
-                    fs.unlinkSync(file.path);
                 });
+                data.attachements.forEach(async (file) => {
+                  await NewsAttachements.create({
+                    attachement_id: Number(file),
+                    new_id: newCreated.id
+                  })
+                });
+                Response.send(newCreated);
+            }).catch((error) => {
+                if (Request.files) {
+                  Request.files.forEach((file) => {
+                    fs.unlinkSync(file.path);
+                  });
+                }
                 Response.json(error.message);
             })
         }).catch((error) => {
@@ -83,6 +86,9 @@ class NewsController extends Controller{
                     model: Tags,
                     as: 'tags',
                     order: [['index_number', 'ASC']]
+                }, {
+                    model: Attachements,
+                    as: 'mainImg'
                 }
             ],
             order: [['createdAt', 'DESC']]
@@ -106,11 +112,67 @@ class NewsController extends Controller{
         });
     }
 
-    update() {
-
+    deleteTag(Request, Response) {
+      NewsTags.findOne({
+        new_id: Request.params.new_id,
+        tag_id: Request.params.tag_id
+      }).then((tag) => {
+        if (tag) {
+          tag.destroy();
+        }
+        Response.send({ succes: true, data: tag });
+      }).catch(error => {
+        Response.status(500).send({ success: false, message: error.message });
+      })
     }
-    
 
+    deleteAttachement(Request, Response) {
+      NewsAttachements.findOne({
+        new_id: Request.params.new_id,
+        attachement_id: Request.params.file_id
+      }).then((file) => {
+        if (file) {
+          file.destroy();
+        }
+        Response.send({ success: true, data: file });
+      }).catch(error => {
+        Response.status(500).send({ success: false, message: error.message });
+      })
+    }
+
+    update(Request, Response) {
+      this.Joi.validate(Request.body, NewsSchema.create).then(async (data) => {
+        data.creator_id = Request.auth.id;
+
+        const UpdateNew = await NewsModel.findById(Request.params.id);
+        UpdateNew.update(data).then(newUpdated => {
+          data.tags.forEach(async (tag) => {
+            await NewsTags.findOrCreate({
+              where: {
+                tag_id: Number(tag),
+                new_id: newUpdated.id
+              }
+            })
+          });
+          data.attachements.forEach(async (file) => {
+            await NewsAttachements.create({
+              attachement_id: Number(file),
+              new_id: newUpdated.id
+            })
+          });
+          Response.send(newUpdated);
+        }).catch((error) => {
+          if (Request.files) {
+            Request.files.forEach((file) => {
+              fs.unlinkSync(file.path);
+            });
+          }
+          Response.json(error.message);
+        })
+      }).catch((error) => {
+        Response.json(error.message);
+      })
+    }
 }
 
 module.exports = new NewsController();

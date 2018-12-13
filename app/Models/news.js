@@ -1,6 +1,6 @@
 
 module.exports = function (sequelize,Sequelize) {
-    
+
     let NewsSchema = {
         title: {
             type: Sequelize.STRING(256),
@@ -16,6 +16,13 @@ module.exports = function (sequelize,Sequelize) {
                 key: 'id'
             }
         },
+        main_img: {
+          type: Sequelize.INTEGER,
+          references: {
+              model: 'attachements',
+              key: 'id'
+          }
+        },
         createdAt: {
             type: Sequelize.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
@@ -28,11 +35,11 @@ module.exports = function (sequelize,Sequelize) {
             type: Sequelize.DATE
         }
     };
-    
+
     let ModelOptions = {
         timestamps: true,paranoid: true
     };
-    
+
     return sequelize.define('news', NewsSchema, ModelOptions);
 };
 

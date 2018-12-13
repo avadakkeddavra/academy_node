@@ -3,8 +3,9 @@ const Joi = require('joi');
 const CreateSchema = Joi.object().keys({
     title: Joi.string().required(),
     content: Joi.string().required(),
-    attachements: Joi.any(),
-    tags: Joi.string().empty('')
+    attachements: Joi.array(),
+    main_img: Joi.number(),
+    tags: Joi.array()
 });
 
 module.exports = {

@@ -16,7 +16,7 @@ const AuthSchema = require('@schema/AuthSchema');
 const bcrypt = require('bcrypt');
 /**
  * Services
- * 
+ *
  */
 const DefaultService = require('@service/DefaultService');
 const JWTService = require('@service/JWTService');
@@ -40,7 +40,7 @@ class AuthController extends Controller{
                                 name:user.name,
                                 id:user.id,
                                 email:user.email,
-                            }, process.env.JWT_SECRET, { expiresIn:'1h'});
+                            }, process.env.JWT_SECRET, { expiresIn:'24h'});
 
                             Response.send({success: true, token: token})
                         } else {
@@ -70,7 +70,7 @@ class AuthController extends Controller{
                         name:user.name,
                         id:user.id,
                         email:user.email,
-                    }, process.env.JWT_SECRET, { expiresIn:'1h'});
+                    }, process.env.JWT_SECRET, { expiresIn:'24h'});
 
                     Response.send({success: true, token: token})
                 }).catch(Error => {
@@ -88,7 +88,7 @@ class AuthController extends Controller{
             User.findOne({
                 where: {
                     email: Data.email
-                } 
+                }
             }).then(async user => {
 
                 if(user) {
@@ -116,14 +116,14 @@ class AuthController extends Controller{
                                 }
                                 Response.send({success: true});
                             });
-                                      
+
                         }).catch(Error => {
                             Response.send(Error.stack)
                         })
                     } else {
                         Response.send({message: 'You have already requested for a reset password. Check your email and find a reset link'})
                     }
-                    
+
                 } else {
                     Response.send({success: false, message: 'There no such user with this email'})
                 }
@@ -175,10 +175,10 @@ class AuthController extends Controller{
             }).catch(Error => {
                 Response.send(Error)
             })
-            
+
         }).catch(Error => {
             Response.send(Error)
-        }) 
+        })
     }
 }
 
