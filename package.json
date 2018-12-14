@@ -22,6 +22,7 @@
     "parse-formdata": "^1.0.2",
     "path": "^0.12.7",
     "pug": "^2.0.3",
+    "rimraf": "^2.6.2",
     "sequelize": "^4.38.0"
   },
   "_moduleAliases": {

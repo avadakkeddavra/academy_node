@@ -1,6 +1,6 @@
 
 module.exports = function (sequelize,Sequelize) {
-    
+
     let AttachementsSchema = {
         type: {
             type: Sequelize.STRING(256),
@@ -18,6 +18,10 @@ module.exports = function (sequelize,Sequelize) {
             type: Sequelize.STRING(256),
             nullable: true
         },
+        size: {
+            type: Sequelize.INTEGER,
+            nullable: true
+        },
         created_at: {
             type: Sequelize.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
@@ -27,11 +31,11 @@ module.exports = function (sequelize,Sequelize) {
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
     };
-    
+
     let ModelOptions = {
         timestamps: false
     };
-    
+
     return sequelize.define('attachements', AttachementsSchema, ModelOptions);
 };
 

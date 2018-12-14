@@ -2,14 +2,18 @@ const express = require('express');
 const Router = express.Router();
 const AuthController = require('@auth/AuthController');
 const AuthMiddleware = require('@middleware/AuthMiddleware');
+const FileUploadMiddleware = require('@middleware/FileUploadMiddleware');
 
 const NewsController = require('@controller/NewsController');
 const TagsController = require('@controller/TagsController');
 const FilesController = require('@controller/FilesController');
 
 const multer = require('multer');
+
+const GlobalModel = require('@model/index');
+
 const UploadService = multer({
-    dest:'./storage',
+    storage: FileUploadMiddleware.getStorage(),
 }).array('files', 5);
 
 
@@ -24,7 +28,6 @@ Router.post(
     '/news',
     AuthMiddleware.auth,
     AuthMiddleware.canCreate,
-    UploadService,
     NewsController.create.bind(NewsController)
 );
 Router.delete('/news/:id', AuthMiddleware.auth, AuthMiddleware.canDelete, NewsController.delete);
@@ -38,7 +41,14 @@ Router.get('/news',  NewsController.all);
 Router.post('/tags', AuthMiddleware.auth, AuthMiddleware.canCreate, TagsController.create.bind(TagsController));
 Router.get('/tags', TagsController.all.bind(TagsController));
 
-Router.post('/files', AuthMiddleware.auth, UploadService, FilesController.create);
-Router.get('/files', AuthMiddleware.auth, FilesController.all);
+Router.post('/folders/:id/files', AuthMiddleware.auth, UploadService, FilesController.create);
+Router.get('/files', AuthMiddleware.auth, FilesController.allFiles);
+Router.delete('/files/:id', AuthMiddleware.auth, FilesController.deleteFile);
+
+Router.post('/folders/:id', AuthMiddleware.auth, FilesController.createFolder);
+Router.get('/folders', AuthMiddleware.auth, FilesController.allFolders);
+Router.put('/folders/:id', AuthMiddleware.auth, FilesController.renameFolder);
+Router.get('/folders/:id', AuthMiddleware.auth, FilesController.getFolder);
+Router.delete('/folders/:id', AuthMiddleware.auth, FilesController.deleteFolder);
 
 module.exports = Router;

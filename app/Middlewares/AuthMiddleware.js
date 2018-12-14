@@ -3,7 +3,7 @@ const GlobalModel = require('@model/index');
 const User = GlobalModel.users;
 
 class AuthMiddleware {
-    
+
     auth(Request, Response, next) {
 
         if(!Request.headers.authorization) {
@@ -24,7 +24,7 @@ class AuthMiddleware {
                             email: user.email,
                             name: user.name,
                             role: user.role
-                        }
+                        };
                         next()
                     } else {
                         Response.status(400);
@@ -85,4 +85,3 @@ class AuthMiddleware {
 }
 
 module.exports = new AuthMiddleware();
-    
