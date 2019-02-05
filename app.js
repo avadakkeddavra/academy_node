@@ -12,7 +12,7 @@ if(process.env.DB_NAME && process.env.DB_HOST && process.env.DB_PASSWORD && proc
 {
     require('@model/connection');
 
-}
+} 
 mailer.extend(app, {
     from: process.env.MAILER_FROM,
     host: process.env.MAILER_HOST,

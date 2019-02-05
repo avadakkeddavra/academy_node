@@ -8,6 +8,7 @@ const User = GlobalModel.users;
 const Tags = GlobalModel.tags;
 const NewsTags = GlobalModel.news_tags;
 const NewsAttachements = GlobalModel.news_attachements;
+const Op = GlobalModel.Sequelize.Op;
 
 const NewsService = require('@service/NewsService');
 const NewsSchema = require('@schema/NewsSchema');
@@ -97,7 +98,18 @@ class NewsController extends Controller{
             ],
             order: [['createdAt', 'DESC']]
         }).then((news) => {
-            Response.send(news)
+            if(Request.query.tag) {
+              const FilteredNews = news.filter((item) => {
+                const tagExists = item.tags.find((tag) => tag.name === Request.query.tag);
+                if(tagExists) {
+                  return item;
+                }
+              });
+              Response.send(FilteredNews)
+            } else {
+              Response.send(news)
+            }
+
         }).catch((Error) => {
             Response.status(500).send(Error.stack);
         })

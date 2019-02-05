@@ -39,7 +39,11 @@ Router.delete('/news/:new_id/file/:file_id', AuthMiddleware.auth,  NewsControlle
 Router.get('/news',  NewsController.all);
 
 Router.post('/tags', AuthMiddleware.auth, AuthMiddleware.canCreate, TagsController.create.bind(TagsController));
-Router.get('/tags', TagsController.all.bind(TagsController));
+Router.get('/tags', AuthMiddleware.auth, TagsController.all.bind(TagsController));
+Router.put('/menu/position', AuthMiddleware.auth, TagsController.updatePosition.bind(TagsController));
+Router.put('/menu/:id', AuthMiddleware.auth, TagsController.addToMenu.bind(TagsController));
+Router.delete('/menu/:id', AuthMiddleware.auth, TagsController.removeFromMenu.bind(TagsController));
+Router.get('/menu', AuthMiddleware.auth, TagsController.menu.bind(TagsController));
 
 Router.post('/folders/:id/files', AuthMiddleware.auth, UploadService, FilesController.create);
 Router.get('/files', AuthMiddleware.auth, FilesController.allFiles);

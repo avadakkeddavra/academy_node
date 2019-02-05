@@ -1,6 +1,6 @@
 
 module.exports = function (sequelize,Sequelize) {
-    
+
     let TagsSchema = {
         name: {
             type: Sequelize.STRING(256),
@@ -13,6 +13,14 @@ module.exports = function (sequelize,Sequelize) {
                 key: 'id'
             }
         },
+          in_menu: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: 0
+          },
+        orderBy: {
+          type: Sequelize.INTEGER,
+          defaultValue: 0
+        },
         created_at: {
             type: Sequelize.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
@@ -22,11 +30,11 @@ module.exports = function (sequelize,Sequelize) {
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         }
     };
-    
+
     let ModelOptions = {
         timestamps: false,
     };
-    
+
     return sequelize.define('tags', TagsSchema, ModelOptions);
 };
 
