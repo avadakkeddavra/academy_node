@@ -44,6 +44,8 @@ Router.get('/tags', TagsController.all.bind(TagsController));
 Router.post('/folders/:id/files', AuthMiddleware.auth, UploadService, FilesController.create);
 Router.get('/files', AuthMiddleware.auth, FilesController.allFiles);
 Router.delete('/files/:id', AuthMiddleware.auth, FilesController.deleteFile);
+Router.get('/files/:id/list', AuthMiddleware.auth, FilesController.toggleList);
+
 
 Router.post('/folders/:id', AuthMiddleware.auth, FilesController.createFolder);
 Router.get('/folders', AuthMiddleware.auth, FilesController.allFolders);

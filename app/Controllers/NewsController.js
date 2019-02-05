@@ -47,15 +47,19 @@ class NewsController extends Controller{
 
             NewsModel.create(data).then( (newCreated) => {
                 data.tags.forEach(async (tag) => {
-                    await NewsTags.create({
-                      tag_id: Number(tag),
-                      new_id: newCreated.id
+                    await NewsTags.findOrCreate({
+                      where: {
+                        tag_id: Number(tag),
+                        new_id: newCreated.id
+                      }
                     })
                 });
                 data.attachements.forEach(async (file) => {
-                  await NewsAttachements.create({
-                    attachement_id: Number(file),
-                    new_id: newCreated.id
+                  await NewsAttachements.findOrCreate({
+                      where: {
+                        attachement_id: Number(file),
+                        new_id: newCreated.id
+                      }
                   })
                 });
                 Response.send(newCreated);
@@ -155,9 +159,11 @@ class NewsController extends Controller{
             })
           });
           data.attachements.forEach(async (file) => {
-            await NewsAttachements.create({
-              attachement_id: Number(file),
-              new_id: newUpdated.id
+            await NewsAttachements.findOrCreate({
+                where: {
+                  attachement_id: Number(file),
+                  new_id: newUpdated.id
+                }
             })
           });
           Response.send(newUpdated);

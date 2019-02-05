@@ -22,6 +22,10 @@ module.exports = function (sequelize,Sequelize) {
             type: Sequelize.INTEGER,
             nullable: true
         },
+        list: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
+        },
         created_at: {
             type: Sequelize.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')

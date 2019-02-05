@@ -21,10 +21,10 @@ services:
     ports:
       - 6080:8080
 
-  web:
-     build: ./
-     volumes:
-       - ./:/home/project
-     ports:
-         - 3000:3000
-     command: nodemon app.js
+  # web:
+  #    build: ./
+  #    volumes:
+  #      - ./:/home/project
+  #    ports:
+  #        - 3000:3000
+  #    command: nodemon app.js

@@ -32,6 +32,17 @@ class FilesController {
             Response.send('Nothing founded');
         }
     }
+
+    async toggleList(Request, Response) {
+      let file = await Attachements.findById(Request.params.id);
+      if(file.list === 0) {
+        file.update({list: 1});
+      } else {
+        file.update({list: 0});
+      }
+
+      Response.send({ file });
+    }
     /*
     * parentDir
     * name
